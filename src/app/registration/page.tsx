@@ -4,7 +4,6 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import DarkMode from "@/components/common/dark-mode";
 import {
   RegistrationFormData,
   registrationSchema,
@@ -20,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-function Registration() {
+export default function Registration() {
   // Declarations...
   const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
@@ -45,9 +44,6 @@ function Registration() {
 
   return (
     <div>
-      <div className="p-4 flex flex-row justify-end">
-        <DarkMode />
-      </div>
       <div className="flex flex-col justify-center items-center gap-2 h-[100vh]">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Registration Form
@@ -98,5 +94,3 @@ function Registration() {
     </div>
   );
 }
-
-export default Registration;
