@@ -11,6 +11,7 @@ export default function Header() {
                 <Link href="/">Main</Link>
                 <Link href="/home">Home</Link>
                 <Link href="/registration">Registration</Link>
+                <Link href="/table-next">Table</Link>
             </nav>
             <div className="p-4 flex flex-row justify-end">
                 <DarkMode />
