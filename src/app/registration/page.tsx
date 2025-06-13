@@ -1,11 +1,14 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { date, z } from "zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegistrationFormData, registrationSchema } from "@/schemas/registration.schema";
+import {
+  RegistrationFormData,
+  registrationSchema,
+} from "@/schemas/registration.schema";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
@@ -35,29 +38,29 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-
+} from "@/components/ui/popover";
+import { toast } from "sonner";
 
 const genderList = [
   {
     key: 1,
-    value: 'male',
-    label: 'Male'
+    value: "male",
+    label: "Male",
   },
   {
     key: 2,
-    value: 'female',
-    label: 'Female'
+    value: "female",
+    label: "Female",
   },
   {
     key: 3,
-    value: 'other',
-    label: 'Other'
-  }
+    value: "other",
+    label: "Other",
+  },
 ];
 
 export default function Registration() {
+  const [selected, setSelected] = useState<Date | undefined>(undefined);
   // Declarations...
   const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
@@ -65,8 +68,7 @@ export default function Registration() {
       username: "",
       email: "",
       gender: "",
-      dob: new Date,
-      time: new Date
+      dob: new Date(),
     },
   });
 
@@ -75,10 +77,33 @@ export default function Registration() {
     console.log("Button clicked");
   };
 
-  function onSubmit(values: z.infer<typeof registrationSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and valkeyated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof registrationSchema>) {
+    console.log("values: ", values);
+    try {
+      const response = await fetch("http://localhost:3001/user-registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Something went wrong");
+      }
+
+      const data = await response.json();
+      console.log("✅ User created:", data);
+      // You can reset the form or show a success message here
+
+      if (data) {
+        toast.success("User registered successfully!");
+      }
+    } catch (error: any) {
+      console.log("❌ Error creating user:", error.message);
+      // Show an error toast or UI feedback
+    }
   }
 
   return (
@@ -129,7 +154,10 @@ export default function Registration() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Gender</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select gender" />
@@ -137,12 +165,15 @@ export default function Registration() {
                           </FormControl>
                           <SelectContent>
                             {genderList.map((option) => (
-                              <SelectItem key={option.key} value={option.value}>{option.label}</SelectItem>
+                              <SelectItem key={option.key} value={option.value}>
+                                {option.label}
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </FormItem>
-                    )} />
+                    )}
+                  />
                 </div>
 
                 <div className="w-full col-span-6">
@@ -177,9 +208,10 @@ export default function Registration() {
                               selected={field.value}
                               onSelect={field.onChange}
                               disabled={(date) =>
-                                date > new Date() || date < new Date("1900-01-01")
+                                date > new Date() ||
+                                date < new Date("1900-01-01")
                               }
-                              initialFocus
+                              captionLayout="dropdown"
                             />
                           </PopoverContent>
                         </Popover>

@@ -11,10 +11,7 @@ export const registrationSchema = z.object({
     gender: z.string(),
     dob: z.date({
         required_error: "A date of birth is required.",
-    }),
-    time: z.date({
-        required_error: "Time is required.",
-    }),
+    })
 });
 
 // For frontend form validation

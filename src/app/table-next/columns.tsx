@@ -15,16 +15,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/common/data-table-column-header"
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
+export type RegistrationForm = {
     id: string
-    amount: number
-    status: "pending" | "processing" | "success" | "failed"
+    username: string
     email: string
+    gender: "Male" | "Female" | "Other"
+    dob: Date
 }
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<RegistrationForm>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -48,38 +47,50 @@ export const columns: ColumnDef<Payment>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "email",
+        accessorKey: "username",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Email
+                    User Name
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
-        accessorKey: "status",
+        accessorKey: "email",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Status" />
+            <DataTableColumnHeader column={column} title="email" />
         ),
     },
     {
-        accessorKey: "amount",
-        header: () => <div className="text-right">Amount</div>,
-        cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("amount"))
-            const formatted = new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-            }).format(amount)
-
-            return <div className="text-right font-medium">{formatted}</div>
-        },
+        accessorKey: "gender",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="gender" />
+        ),
     },
+    {
+        accessorKey: "dob",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="date of birth" />
+        ),
+    },
+    // {
+    //     accessorKey: "amount",
+    //     header: () => <div className="text-right">Amount</div>,
+    //     cell: ({ row }) => {
+    //         const amount = parseFloat(row.getValue("amount"))
+    //         const formatted = new Intl.NumberFormat("en-US", {
+    //             style: "currency",
+    //             currency: "USD",
+    //         }).format(amount)
+
+    //         return <div className="text-right font-medium">{formatted}</div>
+    //     },
+    // },
     {
         id: "actions",
         cell: ({ row }) => {

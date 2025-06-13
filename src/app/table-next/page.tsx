@@ -1,115 +1,27 @@
-import React from 'react'
-import { Payment, columns } from "./columns"
-import { DataTable } from "./data-table"
+"use server"
 
-async function getData(): Promise<Payment[]> {
-    // Fetch data from your API here.
-    return [
-        {
-            id: "728ed52f",
-            amount: 100,
-            status: "pending",
-            email: "pending@example.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 125,
-            status: "processing",
-            email: "processing@gmail.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 135,
-            status: "success",
-            email: "success@gmail.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 145,
-            status: "failed",
-            email: "failed@gmail.com",
-        },
-        {
-            id: "728ed52f",
-            amount: 100,
-            status: "pending",
-            email: "pending@example.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 125,
-            status: "processing",
-            email: "processing@gmail.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 135,
-            status: "success",
-            email: "success@gmail.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 145,
-            status: "failed",
-            email: "failed@gmail.com",
-        },
-        {
-            id: "728ed52f",
-            amount: 100,
-            status: "pending",
-            email: "pending@example.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 125,
-            status: "processing",
-            email: "processing@gmail.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 135,
-            status: "success",
-            email: "success@gmail.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 145,
-            status: "failed",
-            email: "failed@gmail.com",
-        },
-        {
-            id: "728ed52f",
-            amount: 100,
-            status: "pending",
-            email: "pending@example.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 125,
-            status: "processing",
-            email: "processing@gmail.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 135,
-            status: "success",
-            email: "success@gmail.com",
-        },
-        {
-            id: "489e1d42",
-            amount: 145,
-            status: "failed",
-            email: "failed@gmail.com",
-        },
-    ]
+import React from "react";
+import { RegistrationForm, columns } from "./columns";
+import { DataTable } from "./data-table";
+
+async function getData(): Promise<RegistrationForm[]> {
+   const response = await fetch('http://localhost:3001/user-registration');
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch user data');
+  }
+
+  const users: RegistrationForm[] = await response.json();
+  return users;
 }
 
 export default async function TableNext() {
-    const data = await getData();
+  const data = await getData();
 
-    return (
-        <div className="container mx-auto py-10">
-            <DataTable columns={columns} data={data} />
-        </div>
-    )
+  return (
+    <div className="container mx-auto py-10">
+      <DataTable columns={columns} data={data} />
+    </div>
+  );
 }
